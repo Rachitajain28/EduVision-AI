@@ -128,7 +128,6 @@ npm run dev
 
 ## 👩‍💻 Contributors
 
-* **Nandini Shukla**
 * **Rakhi**
 * **Rachita Jain**
 ---
