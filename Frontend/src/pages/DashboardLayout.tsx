@@ -14,7 +14,6 @@ const navItems = [
   { icon: Brain, label: "Learning Style Quiz", path: "/dashboard/learning-style" },
   { icon: BookOpen, label: "Summarizer", path: "/dashboard/summarizer" },
   { icon: Compass, label: "Career Path", path: "/dashboard/career" },
-  { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
   { icon: Layers, label: "Study Room", path: "/dashboard/study-room" },
   { icon: User, label: "Profile", path: "/dashboard/profile" },
 ];

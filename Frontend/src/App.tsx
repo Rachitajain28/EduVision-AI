@@ -14,7 +14,6 @@ import RoomDetailPage from "./pages/RoomDetailPage";
 import DashboardHome from "./pages/DashboardHome";
 import LearningStylePage from "./pages/LearningStylePage";
 import SummarizerPage from "./pages/SummarizerPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
 import CareerPage from "./pages/CareerPage";
 import FlashcardsPage from "./pages/FlashcardsPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -38,7 +37,6 @@ const App = () => (
               <Route index element={<DashboardHome />} />
               <Route path="learning-style" element={<LearningStylePage />} />
               <Route path="summarizer" element={<SummarizerPage />} />
-              <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="career" element={<CareerPage />} />
               <Route path="continue-quiz" element={<ContinueQuizPage />} />
               <Route path="flashcards" element={<FlashcardsPage />} />
