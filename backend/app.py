@@ -9,16 +9,17 @@ from dotenv import load_dotenv
 import PyPDF2
 from jose import jwt
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 import hashlib
+import json
+from bson import ObjectId
 
 # your modules
 
 from ml.model_career import model
 from ml.predictor_career import predict_top_careers, validate_scores
 from services.career_service import get_career_info
-from auth import create_token
-from database import SessionLocal, engine
+from auth import create_token, verify_token
+from database import users_collection
 import models
 import random
 import string
@@ -37,7 +38,6 @@ class JoinRoom(BaseModel):
 # ================= INIT =================
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)
 
 # ================= ENV =================
 load_dotenv()
@@ -62,22 +62,13 @@ app.add_middleware(
 # ================= AUTH =================
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
-        user = db.query(models.User).filter(models.User.id == user_id).first()
-
+        user = await users_collection.find_one({"_id": ObjectId(user_id)})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-
         return user
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -174,7 +165,7 @@ async def summarize_pdf(file: UploadFile = File(...)):
 def predict_style(data: LearningInput):
     try:
         result = predict_learning_style(data.answers)
-        return result   # 👈 important change
+        return result   
     except Exception as e:
         return {"error": str(e)}
 
@@ -262,7 +253,6 @@ answer is the index (0-3) of the correct option.
             if raw.startswith("json"):
                 raw = raw[4:]
 
-        import json
         questions = json.loads(raw.strip())
         return questions
 
@@ -285,62 +275,63 @@ class SignupInput(BaseModel):
     course: str
 
 @app.post("/signup")
-def signup(data: SignupInput, db: Session = Depends(get_db)):
-    if db.query(models.User).filter(models.User.email == data.email).first():
+async def signup(data: SignupInput):
+    existing = await users_collection.find_one({"email": data.email})
+    if existing:
         raise HTTPException(status_code=400, detail="Email already exists")
 
     hashed_password = hashlib.sha256(data.password.encode()).hexdigest()
 
-    user = models.User(
-        name=data.name,
-        email=data.email,
-        password=hashed_password,
-        age=data.age,
-        gender=data.gender,
-        college=data.college,
-        course=data.course
-    )
+    user_doc = {
+        "name": data.name,
+        "email": data.email,
+        "password": hashed_password,
+        "age": data.age,
+        "gender": data.gender,
+        "college": data.college,
+        "course": data.course,
+        "xp": 0,
+        "streak": 0
+    }
 
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-
+    result = await users_collection.insert_one(user_doc)
     return {"message": "User created successfully"}
 
 @app.post("/login")
-def login(data: LoginInput, db: Session = Depends(get_db)):
+async def login(data: LoginInput):
     hashed_password = hashlib.sha256(data.password.encode()).hexdigest()
 
-    user = db.query(models.User).filter(models.User.email == data.email).first()
+    user = await users_collection.find_one({"email": data.email})
 
-    if not user or user.password != hashed_password:
+    if not user or user["password"] != hashed_password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_token({"user_id": user.id})
+    token = create_token({"user_id": str(user["_id"])})
     return {"access_token": token}
 
 @app.get("/profile")
-def profile(current_user: models.User = Depends(get_current_user)):
+async def profile(current_user: dict = Depends(get_current_user)):
     return {
-        "name": current_user.name,
-        "email": current_user.email,
-        "xp": current_user.xp,
-        "streak": current_user.streak,
-        "age": current_user.age,
-        "gender": current_user.gender,
-        "college": current_user.college,
-        "course": current_user.course
+        "name": current_user["name"],
+        "email": current_user["email"],
+        "xp": current_user.get("xp", 0),
+        "streak": current_user.get("streak", 0),
+        "age": current_user.get("age"),
+        "gender": current_user.get("gender"),
+        "college": current_user.get("college"),
+        "course": current_user.get("course")
     }
 
 @app.get("/me")
-def get_current_user_data(current_user: models.User = Depends(get_current_user)):
+async def get_current_user_data(current_user: dict = Depends(get_current_user)):
+    current_user["_id"] = str(current_user["_id"])
     return current_user
 
 
 # ===============================
 # 🔥 STUDY ROOM APIs
 # ===============================
-rooms = []  # In-memory storage for rooms (for demo purposes only)
+rooms = []  # In-memory storage for rooms 
 @app.post("/rooms")
 def create_room(data: RoomCreate):
     new_room = {

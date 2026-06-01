@@ -5,3 +5,5 @@ groq
 sentence-transformers
 PyPDF2
 python-multipart
+motor
+pymongo

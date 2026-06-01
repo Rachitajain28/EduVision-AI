@@ -1,16 +1,24 @@
-from sqlalchemy import Column, Integer, String
-from database import Base
+from pydantic import BaseModel, Field
+from typing import Optional
 
-class User(Base):
-    __tablename__ = "users"
+class User(BaseModel):
+    name: str
+    email: str
+    password: str
+    xp: int = 0
+    streak: int = 0
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    college: Optional[str] = None
+    course: Optional[str] = None
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    email = Column(String, unique=True)
-    password = Column(String)
-    xp = Column(Integer, default=0)
-    streak = Column(Integer, default=0)
-    age = Column(Integer)
-    gender = Column(String)
-    college = Column(String)
-    course = Column(String)
+class UserResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    xp: int
+    streak: int
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    college: Optional[str] = None
+    course: Optional[str] = None
