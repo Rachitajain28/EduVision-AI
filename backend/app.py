@@ -53,6 +53,7 @@ app.add_middleware(
         "http://192.168.29.193:8080",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://10.105.34.55:8080",   # <-- add this
     ],
     allow_credentials=True,
     allow_methods=["*"],
