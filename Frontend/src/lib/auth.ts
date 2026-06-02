@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export interface User {
   name: string;
   email: string;
@@ -17,7 +19,7 @@ export const signup = async (
   college: string,
   course: string
 ) => {
-  const res = await fetch("http://127.0.0.1:8000/signup", {
+  const res = await fetch(`${API_URL}/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +44,7 @@ export const signup = async (
 
 // ✅ LOGIN → token store
 export const login = async (email: string, password: string) => {
-  const res = await fetch("http://127.0.0.1:8000/login", {
+  const res = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -60,7 +62,7 @@ export const login = async (email: string, password: string) => {
   localStorage.setItem("token", data.access_token);
 
   // ✅ user fetch karo backend se
-  const userRes = await fetch("http://127.0.0.1:8000/me", {
+  const userRes = await fetch(`${API_URL}/me`, {
     headers: {
       Authorization: `Bearer ${data.access_token}`,
     },

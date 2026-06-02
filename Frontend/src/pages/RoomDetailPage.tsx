@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 const RoomDetailPage = () => {
     const { code } = useParams();
     const [room, setRoom] = useState<any>(null);
@@ -9,7 +11,7 @@ const RoomDetailPage = () => {
         if (!code) return;
 
         // 👇 AUTO JOIN
-        fetch("http://127.0.0.1:8000/rooms/join", {
+        fetch(`${API_URL}/rooms/join`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, ChevronRight } from "lucide-react";
 import learningData from "../data/learningStyleData.json";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 const shuffleArray = (array: any[]) => {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -38,7 +40,7 @@ const LearningStylePage = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://127.0.0.1:8000/predict-learning-style", {
+      const res = await fetch(`${API_URL}/predict-learning-style`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Copy, Download, Sparkles, Loader2, BookOpen } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 const SummarizerPage = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +18,7 @@ const SummarizerPage = () => {
     setSummary("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/summarize", {
+      const response = await fetch(`${API_URL}/summarize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -49,7 +51,7 @@ const SummarizerPage = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/summarize-pdf", {
+      const response = await fetch(`${API_URL}/summarize-pdf`, {
         method: "POST",
         body: formData
       });

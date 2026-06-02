@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Users, Link2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const StudyRoomPage = () => {
     const [roomCode, setRoomCode] = useState("");
@@ -9,14 +10,14 @@ const StudyRoomPage = () => {
     const [rooms, setRooms] = useState<any[]>([]);
     const navigate = useNavigate();
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/rooms")
+        fetch(`${API_URL}/rooms`)
             .then(res => res.json())
             .then(data => setRooms(data));
     }, []);
 
     // ✅ YEH NICHE likhna hai (state ke bahar)
     const handleCreateRoom = async () => {
-        const res = await fetch("http://127.0.0.1:8000/rooms", {
+        const res = await fetch(`${API_URL}/rooms`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -37,7 +38,7 @@ const StudyRoomPage = () => {
     };
 
     const handleDeleteRoom = async (code: string) => {
-        await fetch(`http://127.0.0.1:8000/rooms/${code}`, {
+        await fetch(`${API_URL}/rooms/${code}`, {
             method: "DELETE"
         });
 
@@ -47,7 +48,7 @@ const StudyRoomPage = () => {
     const handleJoinRoom = async () => {
         if (!roomCode) return;
 
-        const res = await fetch("http://127.0.0.1:8000/rooms/join", {
+        const res = await fetch(`${API_URL}/rooms/join`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
