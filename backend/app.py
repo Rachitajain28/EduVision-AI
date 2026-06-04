@@ -15,7 +15,6 @@ from bson import ObjectId
 
 # your modules
 from ml.predictor_career import predict_top_careers, validate_scores
-from services.career_service import get_career_info
 from auth import create_token, verify_token
 from database import users_collection
 import models
@@ -23,12 +22,6 @@ import random
 import string
 model = None
 
-def get_model():
-    global model
-    if model is None:
-        from ml.model_career import model as career_model
-        model = career_model
-    return model
 
 def generate_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -183,25 +176,14 @@ def predict_style(data: LearningInput):
 def predict_career(data: CareerInput):
     try:
         scores = data.scores
-
         if not validate_scores(scores):
             raise HTTPException(status_code=400, detail="Invalid scores")
 
-        model = get_model()
-        results = predict_top_careers(model,scores)
+        results = predict_top_careers(scores)
 
         return {
-            "main_career": {
-                **get_career_info(results[0]["career"]),
-                "confidence": results[0]["confidence"]
-            },
-            "other_careers": [
-                {
-                    **get_career_info(r["career"]),
-                    "confidence": r["confidence"]
-                }
-                for r in results[1:]
-            ]
+            "main_career": results[0],
+            "other_careers": results[1:]
         }
 
     except Exception as e:
