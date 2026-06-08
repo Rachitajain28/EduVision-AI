@@ -34,7 +34,8 @@ export const useCareerStore = create<CareerStore>()(
         set({ mainCareer: null, otherCareers: [], isPersonalized: false }),
     }),
     {
-      name: 'career-store', // saves to localStorage
+      name: 'career-store',
+      version: 1, 
     }
   )
 )
