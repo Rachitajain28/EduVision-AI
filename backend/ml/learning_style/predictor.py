@@ -1,19 +1,21 @@
-from sklearn.metrics.pairwise import cosine_similarity
-from .model import model, style_embeddings
+from .model import style_keywords
 
 def predict_learning_style(user_answers):
-    scores = {style: 0 for style in style_embeddings}
+    scores = {style: 0 for style in style_keywords}
 
     for answer in user_answers:
-        user_emb = model.encode(answer)
-
-        for style, emb in style_embeddings.items():
-            sim = cosine_similarity([user_emb], [emb])[0][0]
-            scores[style] += sim
+        answer_lower = answer.lower()
+        for style, keywords in style_keywords.items():
+            for kw in keywords:
+                if kw in answer_lower:
+                    scores[style] += 1
 
     predicted_style = max(scores, key=scores.get)
 
-    # 🔥 ADD DETAILS
+    # Fallback if no keywords matched
+    if scores[predicted_style] == 0:
+        predicted_style = "visual"
+
     details = {
         "visual": {
             "description": "You learn best through images, diagrams, and visual content.",
