@@ -17,18 +17,22 @@ const LandingNavbar = () => {
       animate={{ y: 0, opacity: 1 }}
       className="sticky top-0 z-50 glass-card-strong border-b border-border/30"
     >
-      <div className="container mx-auto flex items-center justify-between py-3 px-4">
+      <div className="w-full grid grid-cols-3 items-center py-3 px-6">
+
+        {/* LEFT */}
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold">
-          <img src={foxyMascot} alt="Foxy" className="w-12 h-12" />
+          {/* <img src={foxyMascot} alt="Foxy" className="w-12 h-12" /> */}
           <span className="text-gradient">EduVision AI</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-6">
+        {/* CENTER */}
+        <div className="hidden md:flex items-center justify-center gap-6">
           <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
           <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">How It Works</a>
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
+        {/* RIGHT */}
+        <div className="hidden md:flex items-center justify-end gap-3">
           <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-muted transition-colors">
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -48,9 +52,12 @@ const LandingNavbar = () => {
           )}
         </div>
 
-        <button onClick={() => setOpen(!open)} className="md:hidden p-2">
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* MOBILE HAMBURGER */}
+        <div className="md:hidden flex justify-end col-span-2">
+          <button onClick={() => setOpen(!open)} className="p-2">
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
