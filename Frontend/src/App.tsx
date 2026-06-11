@@ -16,7 +16,7 @@ import LearningStylePage from "./pages/LearningStylePage";
 import SummarizerPage from "./pages/SummarizerPage";
 import CareerPage from "./pages/CareerPage";
 import FlashcardsPage from "./pages/FlashcardsPage";
-import ProfilePage from "./pages/ProfilePage";
+// import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import ContinueQuizPage from "./pages/ContinueQuizPage";
 
@@ -40,8 +40,10 @@ const App = () => (
               <Route path="career" element={<CareerPage />} />
               <Route path="continue-quiz" element={<ContinueQuizPage />} />
               <Route path="flashcards" element={<FlashcardsPage />} />
-              <Route path="profile" element={<ProfilePage />} />
+              {/* <Route path="profile" element={<ProfilePage />} /> */}
               <Route path="/dashboard/room/:code" element={<RoomDetailPage />} />
+              {/* 
+              <Route path="/dashboard/study-room" element={<StudyRoomPage />} /> */}
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

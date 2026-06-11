@@ -110,7 +110,7 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
 
-        const res = await fetch(`${API_URL}/predict-career`, {
+      const res = await fetch(`${API_URL}/predict-career`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scores }),
@@ -118,6 +118,10 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
       const data = await res.json()
       if (data.error) throw new Error(data.error)
       setResults(data.main_career, data.other_careers)
+      localStorage.setItem("career_result", JSON.stringify({  // ADD
+        main_career: data.main_career,                        // ADD
+        other_careers: data.other_careers,                    // ADD
+      }));
       onComplete()
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.")
@@ -223,13 +227,12 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current
+                className={`h-2 rounded-full transition-all duration-300 ${i === current
                     ? "bg-foreground w-4"
                     : ratings[i] !== undefined
-                    ? "bg-foreground/50 w-2"
-                    : "bg-muted w-2"
-                }`}
+                      ? "bg-foreground/50 w-2"
+                      : "bg-muted w-2"
+                  }`}
               />
             ))}
           </div>
@@ -381,9 +384,8 @@ const ResultsView = ({ onRetake }: { onRetake: () => void }) => {
               onClick={() => setSelectedOtherIdx(
                 selectedOtherIdx === idx ? null : idx
               )}
-              className={`glass-card rounded-2xl p-5 text-left transition-all ${
-                selectedOtherIdx === idx ? "ring-2 ring-primary" : "hover:shadow-lg"
-              }`}
+              className={`glass-card rounded-2xl p-5 text-left transition-all ${selectedOtherIdx === idx ? "ring-2 ring-primary" : "hover:shadow-lg"
+                }`}
             >
               <TrendingUp className="w-6 h-6 mb-3 text-primary" />
               <p className="font-display font-bold">{c.career}</p>

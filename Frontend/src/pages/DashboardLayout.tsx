@@ -3,10 +3,9 @@ import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
 import { getCurrentUser, logout } from "@/lib/auth";
-import foxyMascot from "@/assets/foxy-mascot.png";
 import {
-  LayoutDashboard, Brain, BookOpen, BarChart3, Compass, Layers,
-  User, LogOut, Menu, X, Moon, Sun, ChevronLeft
+  LayoutDashboard, Brain, BookOpen, Compass,
+  LogOut, Menu, Moon, Sun, ChevronLeft
 } from "lucide-react";
 
 const navItems = [
@@ -14,8 +13,6 @@ const navItems = [
   { icon: Brain, label: "Learning Style Quiz", path: "/dashboard/learning-style" },
   { icon: BookOpen, label: "Summarizer", path: "/dashboard/summarizer" },
   { icon: Compass, label: "Career Path", path: "/dashboard/career" },
-  { icon: Layers, label: "Study Room", path: "/dashboard/study-room" },
-  { icon: User, label: "Profile", path: "/dashboard/profile" },
 ];
 
 const DashboardLayout = () => {
@@ -31,7 +28,6 @@ const DashboardLayout = () => {
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 flex items-center gap-2">
-        <img src={foxyMascot} alt="Foxy" className="w-8 h-8 shrink-0" />
         {!collapsed && <span className="font-display font-bold text-lg">EduVision AI</span>}
       </div>
 
@@ -43,8 +39,7 @@ const DashboardLayout = () => {
               key={item.path}
               to={item.path}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${active ? "gradient-primary shadow-md" : "hover:bg-muted"
-                }`}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${active ? "gradient-primary shadow-md" : "hover:bg-muted"}`}
             >
               <item.icon className="w-5 h-5 shrink-0" />
               {!collapsed && <span>{item.label}</span>}
@@ -58,21 +53,23 @@ const DashboardLayout = () => {
           <LogOut className="w-5 h-5 shrink-0" />
           {!collapsed && <span>Logout</span>}
         </button>
+        <button onClick={() => setCollapsed(!collapsed)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted w-full transition-colors mt-1">
+          <ChevronLeft className={`w-4 h-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+          {!collapsed}
+        </button>
       </div>
     </div>
   );
 
   return (
     <div className="min-h-screen flex">
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar — fixed */}
       <motion.aside
         animate={{ width: collapsed ? 72 : 256 }}
-        className="hidden lg:flex flex-col glass-card-strong border-r border-border/30 shrink-0 overflow-hidden"
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="hidden lg:flex flex-col glass-card-strong border-r border-border/30 shrink-0 overflow-hidden fixed top-0 left-0 h-screen z-30"
       >
         <NavContent />
-        <button onClick={() => setCollapsed(!collapsed)} className="p-3 border-t border-border/30 flex items-center justify-center hover:bg-muted transition-colors">
-          <ChevronLeft className={`w-4 h-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
-        </button>
       </motion.aside>
 
       {/* Mobile sidebar */}
@@ -90,8 +87,12 @@ const DashboardLayout = () => {
         )}
       </AnimatePresence>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main content — margin left equal to sidebar width */}
+      <motion.div
+        animate={{ marginLeft: collapsed ? 72 : 256 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="flex-1 flex flex-col min-w-0"
+      >
         <header className="sticky top-0 z-30 glass-card-strong border-b border-border/30 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => setMobileOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-muted">
@@ -117,7 +118,7 @@ const DashboardLayout = () => {
             <Outlet />
           </motion.div>
         </main>
-      </div>
+      </motion.div>
     </div>
   );
 };

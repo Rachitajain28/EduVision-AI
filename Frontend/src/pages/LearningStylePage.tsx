@@ -52,6 +52,7 @@ const LearningStylePage = () => {
 
       const data = await res.json();
       setResult(data);
+      localStorage.setItem("learning_style_result", JSON.stringify(data)); // ADD
     } catch (error) {
       console.error("Error:", error);
     } finally {
