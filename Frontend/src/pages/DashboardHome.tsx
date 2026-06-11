@@ -48,7 +48,6 @@ const leaderboard = [
 const quickActions = [
   { label: "Continue Quiz", icon: Brain, path: "/dashboard/continue-quiz" }, // ✅ updated
   { label: "Review Flashcards", icon: BookOpen, path: "/dashboard/flashcards" },
-  { label: "Check Analytics", icon: TrendingUp, path: "/dashboard/analytics" },
   { label: "Career Guide", icon: Compass, path: "/dashboard/career" },
 ]
 
