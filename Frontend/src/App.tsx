@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import StudyRoomPage from "./pages/StudyRoomPage";
+// import StudyRoomPage from "./pages/StudyRoomPage";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -42,8 +42,6 @@ const App = () => (
               <Route path="flashcards" element={<FlashcardsPage />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="/dashboard/room/:code" element={<RoomDetailPage />} />
-
-              <Route path="/dashboard/study-room" element={<StudyRoomPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
