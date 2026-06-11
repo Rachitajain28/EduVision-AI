@@ -108,7 +108,9 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("http://localhost:8000/predict-career", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+
+        const res = await fetch(`${API_URL}/predict-career`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scores }),
