@@ -2,8 +2,9 @@ fastapi
 uvicorn
 python-dotenv
 groq
-sentence-transformers
 PyPDF2
 python-multipart
 motor
 pymongo
+python-jose[cryptography]
+pandas

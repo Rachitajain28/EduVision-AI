@@ -32,7 +32,9 @@ const ContinueQuizPage = () => {
     setAnswers({})
     setShowResult(false)
     try {
-      const res = await fetch("http://localhost:8000/generate-quiz", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+
+        const res = await fetch(`${API_URL}/generate-quiz`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ career: careerName }),
