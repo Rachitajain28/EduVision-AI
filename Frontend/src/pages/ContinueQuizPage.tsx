@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom"
 import { useCareerStore } from "@/store/useCareerStore"
 import {
   ArrowLeft, ArrowRight, CheckCircle,
-  XCircle, BookOpen, Loader2, Sparkles
+  XCircle, BookOpen, Loader2, Sparkles, Trophy
 } from "lucide-react"
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
 
 interface QuizQuestion {
   q: string
@@ -32,9 +34,7 @@ const ContinueQuizPage = () => {
     setAnswers({})
     setShowResult(false)
     try {
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
-
-        const res = await fetch(`${API_URL}/generate-quiz`, {
+      const res = await fetch(`${API_URL}/generate-quiz`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ career: careerName }),
@@ -49,18 +49,39 @@ const ContinueQuizPage = () => {
     }
   }
 
+  const saveResult = async (score: number, total: number, fitPercent: number) => {
+    try {
+      const token = localStorage.getItem("token")
+      await fetch(`${API_URL}/save-quiz-result`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          career: careerName,
+          score,
+          total,
+          fit_percent: fitPercent
+        })
+      })
+    } catch (e) {
+      console.error("Failed to save result", e)
+    }
+  }
+
   useEffect(() => {
     if (careerName) fetchQuestions()
   }, [careerName])
 
-  // ── No career recommended ────────────────────────────────
+  // ── No career ─────────────────────────────────────────
   if (!mainCareer) {
     return (
       <div className="max-w-2xl mx-auto text-center space-y-4 py-20">
         <BookOpen className="w-12 h-12 mx-auto text-muted-foreground" />
         <h2 className="font-display text-2xl font-bold">No Career Recommended Yet</h2>
         <p className="text-muted-foreground">
-          Complete the Career Path quiz first to unlock your personalised quiz.
+          Complete the Career Path quiz first to unlock your practice quiz.
         </p>
         <button
           onClick={() => navigate("/dashboard/career")}
@@ -72,28 +93,27 @@ const ContinueQuizPage = () => {
     )
   }
 
-  // ── Loading ──────────────────────────────────────────────
+  // ── Loading ───────────────────────────────────────────
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto text-center space-y-4 py-20">
         <Loader2 className="w-10 h-10 mx-auto animate-spin text-primary" />
         <h2 className="font-display text-xl font-bold">Generating your quiz...</h2>
         <p className="text-muted-foreground text-sm">
-          Creating 10 AI-powered questions for <span className="text-primary font-semibold">{careerName}</span>
+          Creating 10 AI-powered questions for{" "}
+          <span className="text-primary font-semibold">{careerName}</span>
         </p>
       </div>
     )
   }
 
-  // ── Error ────────────────────────────────────────────────
+  // ── Error ─────────────────────────────────────────────
   if (error) {
     return (
       <div className="max-w-2xl mx-auto text-center space-y-4 py-20">
         <p className="text-red-500 bg-red-500/10 px-4 py-3 rounded-xl">{error}</p>
-        <button
-          onClick={fetchQuestions}
-          className="px-6 py-3 rounded-xl bg-foreground text-background font-semibold hover:opacity-90 transition-all"
-        >
+        <button onClick={fetchQuestions}
+          className="px-6 py-3 rounded-xl bg-foreground text-background font-semibold">
           Try Again
         </button>
       </div>
@@ -110,12 +130,20 @@ const ContinueQuizPage = () => {
     setAnswers((prev) => ({ ...prev, [current]: i }))
   }
 
-  const handleNext = () => {
-    if (isLast) setShowResult(true)
-    else setCurrent((c) => c + 1)
+  const handleNext = async () => {
+    if (isLast) {
+      const score = questions.reduce(
+        (acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0
+      )
+      const fitPercent = Math.round((score / questions.length) * 100)
+      await saveResult(score, questions.length, fitPercent)
+      setShowResult(true)
+    } else {
+      setCurrent((c) => c + 1)
+    }
   }
 
-  // ── Result Screen ────────────────────────────────────────
+  // ── Result Screen ─────────────────────────────────────
   if (showResult) {
     const score = questions.reduce(
       (acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0
@@ -138,32 +166,55 @@ const ContinueQuizPage = () => {
       >
         <div className="glass-card rounded-2xl p-8 space-y-6">
 
-          {/* Score */}
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">{careerName} · AI Quiz</p>
-            <h2 className="font-display text-5xl font-bold">{score}<span className="text-muted-foreground text-2xl">/{questions.length}</span></h2>
-            <p className={`text-2xl font-bold ${fitColor}`}>{fitPercent}% Career Fit</p>
+          {/* Score header */}
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <p className="text-sm text-muted-foreground font-medium">{careerName} · Practice Quiz</p>
+            <h2 className="font-display text-6xl font-bold">
+              {score}
+              <span className="text-muted-foreground text-3xl">/{questions.length}</span>
+            </h2>
+            <div className={`inline-flex px-6 py-2 rounded-full bg-muted font-bold text-xl ${fitColor}`}>
+              {fitPercent}% Career Fit
+            </div>
             <p className={`text-base font-semibold ${fitColor}`}>{fitLabel}</p>
           </div>
 
           {/* Progress bar */}
           <div className="h-3 bg-muted rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-foreground rounded-full"
+              className="h-full gradient-primary rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${fitPercent}%` }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </div>
 
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="p-3 bg-muted/50 rounded-xl text-center">
+              <p className="text-xl font-bold text-green-500">{score}</p>
+              <p className="text-xs text-muted-foreground">Correct</p>
+            </div>
+            <div className="p-3 bg-muted/50 rounded-xl text-center">
+              <p className="text-xl font-bold text-red-400">{questions.length - score}</p>
+              <p className="text-xs text-muted-foreground">Wrong</p>
+            </div>
+            <div className="p-3 bg-muted/50 rounded-xl text-center">
+              <p className={`text-xl font-bold ${fitColor}`}>{fitPercent}%</p>
+              <p className="text-xs text-muted-foreground">Score</p>
+            </div>
+          </div>
+
           {/* Answer Review */}
-          <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
             <p className="text-sm font-semibold text-muted-foreground">Answer Review:</p>
             {questions.map((q, i) => {
               const isCorrect = answers[i] === q.answer
               return (
-                <div
-                  key={i}
+                <div key={i}
                   className={`p-4 rounded-xl border text-sm ${
                     isCorrect
                       ? "border-green-500/30 bg-green-500/10"
@@ -199,7 +250,7 @@ const ContinueQuizPage = () => {
             </button>
             <button
               onClick={fetchQuestions}
-              className="flex-1 py-3 rounded-xl bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 rounded-xl gradient-primary text-sm font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4" /> New Questions
             </button>
@@ -209,19 +260,16 @@ const ContinueQuizPage = () => {
     )
   }
 
-  // ── Quiz Screen ──────────────────────────────────────────
+  // ── Quiz Screen ───────────────────────────────────────
   return (
     <div className="max-w-2xl mx-auto space-y-8">
 
-      {/* Header */}
+      {/* Header — no dashboard button, clean */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium hover:bg-secondary/40 transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" /> Dashboard
-          </button>
+          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shrink-0">
+            <BookOpen className="w-5 h-5" />
+          </div>
           <div>
             <h1 className="font-display text-2xl font-bold">{careerName}</h1>
             <p className="text-muted-foreground text-sm flex items-center gap-1">
@@ -239,7 +287,7 @@ const ContinueQuizPage = () => {
         </div>
         <div className="h-1.5 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-foreground rounded-full"
+            className="h-full gradient-primary rounded-full"
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
           />
@@ -256,24 +304,24 @@ const ContinueQuizPage = () => {
           transition={{ duration: 0.22 }}
           className="glass-card rounded-2xl p-8 space-y-6"
         >
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs px-3 py-1 rounded-full bg-primary/20 text-primary font-semibold">
+              Q{current + 1}
+            </span>
+          </div>
           <h2 className="font-display text-xl font-bold leading-snug">
             {questions[current].q}
           </h2>
-
           <div className="space-y-3">
             {questions[current].options.map((opt, i) => {
               const isSelected = currentAnswer === i
               const isCorrect = i === questions[current].answer
               let style = "border-border bg-secondary/20 hover:border-foreground/40 hover:bg-secondary/40 cursor-pointer"
-
               if (isAnswered) {
                 if (isCorrect) style = "border-green-500 bg-green-500/10 cursor-default"
                 else if (isSelected) style = "border-red-400 bg-red-400/10 cursor-default"
                 else style = "border-border bg-secondary/20 opacity-40 cursor-default"
-              } else if (isSelected) {
-                style = "border-foreground bg-foreground/10"
               }
-
               return (
                 <button
                   key={i}
@@ -285,12 +333,8 @@ const ContinueQuizPage = () => {
                     {["A", "B", "C", "D"][i]}.
                   </span>
                   {opt}
-                  {isAnswered && isCorrect && (
-                    <span className="ml-2 text-green-500">✓</span>
-                  )}
-                  {isAnswered && isSelected && !isCorrect && (
-                    <span className="ml-2 text-red-400">✗</span>
-                  )}
+                  {isAnswered && isCorrect && <span className="ml-2 text-green-500">✓</span>}
+                  {isAnswered && isSelected && !isCorrect && <span className="ml-2 text-red-400">✗</span>}
                 </button>
               )
             })}

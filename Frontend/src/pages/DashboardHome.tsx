@@ -2,12 +2,13 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "@/lib/auth";
-import { Brain, BookOpen, Compass, User, Mail, GraduationCap, Users } from "lucide-react";
+import { Brain, BookOpen,Dumbbell,Trophy, Compass, User, Mail, GraduationCap, Users } from "lucide-react";
 
 const DashboardHome = () => {
   const [user, setUser] = useState<any>(null);
   const [learningStyle, setLearningStyle] = useState<any>(null);
   const [careerResult, setCareerResult] = useState<any>(null);
+  const [quizResults, setQuizResults] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,10 +22,29 @@ const DashboardHome = () => {
     // Career result — localStorage se
     const cr = localStorage.getItem("career_result");
     if (cr) setCareerResult(JSON.parse(cr));
+
+    const fetchQuizResults = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const res = await fetch(`${API_URL}/quiz-results`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+      const data = await res.json()
+      if (data.results) setQuizResults(data.results.reverse())
+    } catch (e) {
+      console.error("Failed to fetch quiz results", e)
+    }
+  }
+  fetchQuizResults()
   }, []);
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+
+  const bestScore = quizResults.length > 0
+    ? Math.max(...quizResults.map((r) => r.fitPercent))
+    : null;
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -148,6 +168,71 @@ const DashboardHome = () => {
           )}
         </motion.div>
       </div>
+
+       {/* Practice Performance */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+        className="glass-card rounded-2xl p-6"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-primary" />
+            <h2 className="font-display font-semibold text-lg">Practice Performance</h2>
+          </div>
+          <button onClick={() => navigate("/dashboard/continue-quiz")}
+            className="px-4 py-2 rounded-xl gradient-primary text-sm font-semibold flex items-center gap-2">
+            <Dumbbell className="w-4 h-4" /> Practice Now
+          </button>
+        </div>
+
+        {quizResults.length > 0 ? (
+          <div className="space-y-4">
+            {/* Best score summary */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-muted/50 rounded-xl text-center">
+                <p className="text-2xl font-bold text-primary">{bestScore}%</p>
+                <p className="text-xs text-muted-foreground">Best Score</p>
+              </div>
+              <div className="p-3 bg-muted/50 rounded-xl text-center">
+                <p className="text-2xl font-bold">{quizResults.length}</p>
+                <p className="text-xs text-muted-foreground">Attempts</p>
+              </div>
+              <div className="p-3 bg-muted/50 rounded-xl text-center">
+                <p className="text-2xl font-bold">
+                  {Math.round(quizResults.reduce((a, r) => a + r.fitPercent, 0) / quizResults.length)}%
+                </p>
+                <p className="text-xs text-muted-foreground">Avg Score</p>
+              </div>
+            </div>
+
+            {/* Recent attempts */}
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Recent Attempts:</p>
+              {quizResults.slice(0, 3).map((r, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+                  <div>
+                    <p className="text-sm font-medium">{r.career}</p>
+                    <p className="text-xs text-muted-foreground">{r.date}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold">{r.score}/{r.total}</p>
+                    <p className={`text-xs font-semibold ${
+                      r.fitPercent >= 71 ? "text-green-500" :
+                      r.fitPercent >= 41 ? "text-yellow-500" : "text-red-400"
+                    }`}>{r.fitPercent}% fit</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-6">
+            <p className="text-muted-foreground text-sm mb-2">No practice attempts yet!</p>
+            <p className="text-xs text-muted-foreground">
+              Complete the Career Path quiz first, then start practicing.
+            </p>
+          </div>
+        )}
+      </motion.div>
 
       {/* Quick Actions */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>

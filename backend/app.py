@@ -322,37 +322,30 @@ async def get_current_user_data(current_user: dict = Depends(get_current_user)):
     return current_user
 
 
-# ===============================
-# 🔥 STUDY ROOM APIs
-# ===============================
-rooms = []  # In-memory storage for rooms 
-@app.post("/rooms")
-def create_room(data: RoomCreate):
-    new_room = {
-        "name": data.name,
-        "members": 1,
-        "code": generate_code()
+from datetime import datetime
+
+class QuizResultInput(BaseModel):
+    career: str
+    score: int
+    total: int
+    fit_percent: int
+
+@app.post("/save-quiz-result")
+async def save_quiz_result(data: QuizResultInput, current_user: dict = Depends(get_current_user)):
+    result = {
+        "career": data.career,
+        "score": data.score,
+        "total": data.total,
+        "fitPercent": data.fit_percent,
+        "date": datetime.now().strftime("%d %b %Y")
     }
-    rooms.append(new_room)
-    return new_room
+    await users_collection.update_one(
+        {"_id": current_user["_id"]},
+        {"$push": {"quiz_results": {"$each": [result], "$slice": -5}}}
+    )
+    return {"message": "Result saved"}
 
+@app.get("/quiz-results")
+async def get_quiz_results(current_user: dict = Depends(get_current_user)):
+    return {"results": current_user.get("quiz_results", [])}
 
-@app.get("/rooms")
-def get_rooms():
-    return rooms
-
-
-@app.post("/rooms/join")
-def join_room(data: JoinRoom):
-    for room in rooms:
-        if room["code"] == data.code:
-            room["members"] += 1
-            return room
-    return {"error": "Room not found"}
-
-
-@app.delete("/rooms/{code}")
-def delete_room(code: str):
-    global rooms
-    rooms = [r for r in rooms if r["code"] != code]
-    return {"message": "Room deleted"}

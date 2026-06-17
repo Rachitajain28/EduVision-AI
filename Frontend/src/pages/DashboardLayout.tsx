@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
 import { getCurrentUser, logout } from "@/lib/auth";
 import {
-  LayoutDashboard, Brain, BookOpen, Compass,
+  LayoutDashboard,Dumbbell, Brain, BookOpen, Compass,
   LogOut, Menu, Moon, Sun, ChevronLeft
 } from "lucide-react";
 
@@ -13,6 +13,7 @@ const navItems = [
   { icon: Brain, label: "Learning Style Quiz", path: "/dashboard/learning-style" },
   { icon: BookOpen, label: "Summarizer", path: "/dashboard/summarizer" },
   { icon: Compass, label: "Career Path", path: "/dashboard/career" },
+  { icon: Dumbbell, label: "Practice", path: "/dashboard/continue-quiz" },
 ];
 
 const DashboardLayout = () => {
@@ -28,7 +29,9 @@ const DashboardLayout = () => {
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 flex items-center gap-2">
-        {!collapsed && <span className="font-display font-bold text-lg">EduVision AI</span>}
+        {!collapsed && <span className="font-display font-bold text-lg cursor-pointer hover:text-primary transition-colors"
+  onClick={() => navigate("/")}
+>EduVision AI</span>}
       </div>
 
       <nav className="flex-1 px-3 space-y-1 mt-4">
