@@ -341,7 +341,6 @@ async def save_quiz_result(data: QuizResultInput, current_user: dict = Depends(g
     }
     await users_collection.update_one(
         {"_id": current_user["_id"]},
-        {"$push": {"quiz_results": {"$each": [result], "$slice": -5}}}
     )
     return {"message": "Result saved"}
 

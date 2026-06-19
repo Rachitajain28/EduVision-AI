@@ -1,5 +1,13 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
+from datetime import datetime
+
+class QuizResult(BaseModel):
+    career: str
+    score: int
+    total: int
+    fitPercent: int
+    date: str
 
 class User(BaseModel):
     name: str
@@ -11,6 +19,7 @@ class User(BaseModel):
     gender: Optional[str] = None
     college: Optional[str] = None
     course: Optional[str] = None
+    quiz_results: List[QuizResult] = []
 
 class UserResponse(BaseModel):
     id: str
@@ -22,3 +31,4 @@ class UserResponse(BaseModel):
     gender: Optional[str] = None
     college: Optional[str] = None
     course: Optional[str] = None
+    quiz_results: List[QuizResult] = []

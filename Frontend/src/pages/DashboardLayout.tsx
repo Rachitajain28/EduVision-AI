@@ -117,10 +117,17 @@ const DashboardLayout = () => {
         </header>
 
         <main className="flex-1 p-4 md:p-6 overflow-auto">
-          <motion.div key={location.pathname} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            <Outlet />
-          </motion.div>
-        </main>
+  <div className="max-w-5xl mx-auto">
+    <motion.div 
+      key={location.pathname} 
+      initial={{ opacity: 0, y: 10 }} 
+      animate={{ opacity: 1, y: 0 }} 
+      transition={{ duration: 0.3 }}
+    >
+      <Outlet />
+    </motion.div>
+  </div>
+</main>
       </motion.div>
     </div>
   );
