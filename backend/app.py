@@ -285,7 +285,8 @@ async def signup(data: SignupInput):
         "college": data.college,
         "course": data.course,
         "xp": 0,
-        "streak": 0
+        "streak": 0,
+        "quiz_results": []
     }
 
     result = await users_collection.insert_one(user_doc)
@@ -332,6 +333,7 @@ class QuizResultInput(BaseModel):
 
 @app.post("/save-quiz-result")
 async def save_quiz_result(data: QuizResultInput, current_user: dict = Depends(get_current_user)):
+    print(f"Saving result for user: {current_user['email']}, career: {data.career}")
     result = {
         "career": data.career,
         "score": data.score,
@@ -341,6 +343,7 @@ async def save_quiz_result(data: QuizResultInput, current_user: dict = Depends(g
     }
     await users_collection.update_one(
         {"_id": current_user["_id"]},
+        {"$push": {"quiz_results": result}}
     )
     return {"message": "Result saved"}
 
