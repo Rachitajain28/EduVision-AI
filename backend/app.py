@@ -22,10 +22,8 @@ import random
 import string
 model = None
 
-
 def generate_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-
 
 # ✅ Study Room Models
 class RoomCreate(BaseModel):
@@ -36,7 +34,6 @@ class JoinRoom(BaseModel):
 
 # ================= INIT =================
 app = FastAPI()
-
 
 # ================= ENV =================
 load_dotenv()
@@ -65,7 +62,6 @@ app.add_middleware(
 
 # ================= AUTH =================
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

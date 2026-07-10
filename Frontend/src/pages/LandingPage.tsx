@@ -8,19 +8,65 @@ import { BookOpen, Brain, BarChart3, Compass, Sparkles, Zap, Target, ArrowRight,
 import { isAuthenticated } from "@/lib/auth";
 
 const features = [
-  { icon: Brain, title: "Learning Style Detection", desc: "Discover how you learn best with our AI-powered quiz", color: "bg-secondary" },
-  { icon: BookOpen, title: "AI Study Summarizer", desc: "Instantly summarize complex study materials", color: "bg-accent" },
-  { icon: BarChart3, title: "Performance Analytics", desc: "Track grades, study hours, and quiz scores", color: "bg-highlight" },
-  { icon: Compass, title: "Career Recommendations", desc: "Get personalized career paths based on your skills", color: "bg-rose" },
-  { icon: Zap, title: "Flashcards System", desc: "Interactive flip cards for quick revision", color: "bg-badge" },
-  { icon: Target, title: "Gamified Learning", desc: "Earn XP, badges, and maintain streaks", color: "bg-primary" },
+  {
+    icon: Brain,
+    color: "bg-secondary",
+    title: "Learning Style Detection",
+    desc: "Discover whether you are a visual, auditory, reading/writing, or kinesthetic learner using AI-powered analysis.",
+  },
+  {
+    icon: Compass,
+    color: "bg-rose",
+    title: "Career Recommendation",
+    desc: "Get personalized career suggestions using the RIASEC model and machine learning.",
+  },
+  {
+    icon: BookOpen,
+    color: "bg-accent",
+    title: "AI Study Summarizer",
+    desc: "Convert lengthy notes and PDFs into concise, easy-to-understand summaries.",
+  },
+  {
+    icon: Zap,
+    color: "bg-badge",
+    title: "Practice & Assessment",
+    desc: "Strengthen your knowledge with quizzes and progress tracking.",
+  },
+  {
+    icon: BarChart3,
+    color: "bg-highlight",
+    title: "Student Dashboard",
+    desc: "Manage learning progress, recommendations, and study resources in one place.",
+  },
+  {
+    icon: Sparkles,
+    color: "bg-badge",
+    title: "Foxy AI Chatbot",
+    desc: "Get instant study guidance, doubt support, motivation, learning tips, and personalized academic assistance from Foxy.",
+  }
 ];
 
 const steps = [
-  { num: "01", title: "Sign Up", desc: "Create your free account in seconds" },
-  { num: "02", title: "Take the Quiz", desc: "Discover your unique learning style" },
-  { num: "03", title: "Study Smart", desc: "Use AI tools to boost your learning" },
-  { num: "04", title: "Track & Grow", desc: "Monitor progress and level up" },
+  {
+    num: "01",
+    title: "Create Account",
+    desc: "Sign up and create your personalized student profile.",
+  },
+  {
+    num: "02",
+    title: "Take Assessments",
+    desc: "Complete learning style and career discovery quizzes.",
+  },
+  {
+    num: "03",
+    title: "AI Analysis",
+    desc: "Our AI models analyze your responses and learning preferences.",
+  },
+  {
+    num: "04",
+    title: "Get Personalized Guidance",
+    desc: "Receive career recommendations, study summaries, and learning paths.",
+  },
 ];
 
 const ScrollCard = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => {
