@@ -1,46 +1,147 @@
 # EduVision AI 🚀
 
-**EduVision AI** is an AI-powered personalized learning and career guidance platform designed to help students learn more effectively based on their individual learning styles.
+> AI-Powered Personalized Learning & Career Guidance Platform
 
-The platform analyzes how a student learns best and adapts study materials, summaries, and recommendations accordingly. It also provides career guidance and performance analytics to help students improve continuously.
+EduVision AI is an intelligent learning platform that helps students learn more effectively through personalized recommendations, AI-powered study assistance, and career guidance. The platform analyzes learning preferences and interests to create a customized educational experience for every student.
 
 ---
 
 ## 🌟 Problem Statement
 
-Students often struggle because traditional education systems provide the same learning method for everyone. However, each student has a unique learning style such as visual, auditory, or reading-based.
+Traditional education follows a one-size-fits-all approach, but every student learns differently. Many students face challenges such as:
 
-EduVision AI solves this problem by using artificial intelligence to:
+- Lack of personalized learning methods
+- Difficulty understanding lengthy study materials
+- Uncertainty in career planning
+- Limited guidance based on individual strengths
 
-* Identify a student's learning style
-* Personalize study materials
-* Provide AI-generated summaries
-* Track learning progress
-* Offer career guidance based on performance
+EduVision AI addresses these challenges using Artificial Intelligence and Machine Learning.
 
 ---
 
-## 💡 Key Features
+## 🎯 Solution
+
+EduVision AI provides:
+
+- Learning Style Detection
+- Career Recommendation System
+- AI Study Material Summarization
+- Personalized Learning Paths
+- Student Performance Tracking
+- AI Learning Assistant
+
+---
+
+## ✨ Key Features
 
 ### 🧠 Learning Style Detection
 
-Uses AI to detect whether a student learns best through visual, reading, or interactive methods.
+Identify whether a student is:
 
-### 📚 AI Study Material Summarization
+- Visual Learner
+- Auditory Learner
+- Reading/Writing Learner
+- Kinesthetic Learner
 
-Students can upload notes or documents and receive AI-generated summaries for faster learning.
+The system analyzes quiz responses and provides personalized learning recommendations.
 
-### 📊 Student Performance Dashboard
-
-Tracks learning progress and provides analytics to identify strengths and weaknesses.
+---
 
 ### 🎓 Career Recommendation System
 
-Suggests suitable career paths based on student interests, skills, and performance.
+A career discovery module based on the **RIASEC Model**:
 
-### 🤖 AI Chatbot – Foxy
+- Realistic
+- Investigative
+- Artistic
+- Social
+- Enterprising
+- Conventional
 
-An intelligent chatbot that assists students with learning guidance, doubts, and study tips.
+Features:
+
+- Career Prediction
+- Confidence Scores
+- Required Skills
+- Alternative Career Paths
+- Personalized Learning Roadmaps
+
+---
+
+### 📚 AI Study Summarizer
+
+Students can:
+
+- Paste study material
+- Upload PDF documents
+- Generate concise summaries
+- Download summarized notes
+- Copy summaries instantly
+
+This reduces revision time and improves productivity.
+
+---
+
+### 📊 Personalized Dashboard
+
+Students can:
+
+- Access learning style reports
+- View career recommendations
+- Track progress
+- Continue assessments
+- Manage learning resources
+
+---
+
+### 🤖 Foxy AI Assistant
+
+An intelligent chatbot that helps students with:
+
+- Learning guidance
+- Study tips
+- Career-related queries
+- Academic support
+
+---
+
+### 🛣 Personalized Learning Roadmap
+
+Based on the student's interests and career goals, the system generates:
+
+```text
+Career Goal
+     ↓
+Required Skills
+     ↓
+Learning Resources
+     ↓
+Step-by-Step Roadmap
+```
+
+---
+
+## 🔄 System Workflow
+
+```text
+Student Registration
+        ↓
+Login Authentication
+        ↓
+Learning Style Assessment
+        ↓
+AI Learning Style Prediction
+        ↓
+Personalized Recommendations
+        ↓
+Career Discovery Assessment
+        ↓
+Career Prediction
+        ↓
+Learning Roadmap Generation
+        ↓
+AI Study Summarization
+```
 
 ---
 
@@ -48,96 +149,128 @@ An intelligent chatbot that assists students with learning guidance, doubts, and
 
 ### Frontend
 
-* React
-* Tailwind CSS
+- React.js
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- React Router DOM
 
 ### Backend
 
-*  Python 
+- Python
+- FastAPI
 
 ### AI / ML
 
-* Machine Learning models for learning style detection
-* NLP for study material summarization
+- Learning Style Prediction Model
+- Career Recommendation Model
+- NLP-based Summarization
+- RIASEC Career Assessment Framework
+
+### Storage
+
+- Local Storage
+- JSON Datasets
 
 ### Deployment
 
-* Vercel (Frontend)
+- Vercel (Frontend)
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 EduVision-AI
 │
 ├── frontend
 │   ├── components
 │   ├── pages
+│   ├── store
+│   ├── data
 │   └── assets
 │
 ├── backend
-│   ├── api
-│   └── models
-│
-├── ai-model
-│   └── learning_style_model
+│   ├── app.py
+│   ├── auth.py
+│   ├── database.py
+│   ├── models.py
+│   ├── services
+│   └── ml
 │
 └── README.md
 ```
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 Installation
 
-### 1. Clone the Repository
+### Clone Repository
 
+```bash
+https://github.com/Rachitajain28/EduVision-AI
 ```
-git clone https://github.com/Rakhi8076/EduVision---AI.git
-```
 
-### 2. Navigate to the Project Folder
+### Navigate to Project
 
-```
+```bash
 cd EduVision---AI
 ```
 
-### 3. Install Dependencies
+### Install Dependencies
 
-```
+```bash
 npm install
 ```
 
-### 4. Start the Development Server
+### Run Frontend
 
-```
+```bash
 npm run dev
+```
+
+### Run Backend
+
+```bash
+python app.py
 ```
 
 ---
 
-## 🎯 Future Improvements
+## 🎯 Future Enhancements
 
-* Advanced AI learning analytics
-* Integration with real educational content platforms
-* Personalized study plans
-* Mobile application
-* Voice-based AI tutor
+- Adaptive Learning Recommendations
+- Advanced Analytics Dashboard
+- Voice-Based AI Tutor
+- Mobile Application
+- Multi-language Support
+- AI Mock Interview Assistant
+- Integration with Educational Platforms
 
 ---
 
 ## 👩‍💻 Contributors
 
-* **Rakhi**
-* **Rachita Jain**
+- Rakhi
+- Rachita Jain
+
 ---
 
 ## 🏆 Hackathon Project
 
-EduVision AI was built as a hackathon project with the goal of improving the learning experience using artificial intelligence.
+EduVision AI was developed as a hackathon project with the vision of making learning:
 
-Our mission is to make learning **smarter, more personalized, and accessible for every student.**
+✅ Personalized  
+✅ Intelligent  
+✅ Accessible  
+✅ Career-Oriented
 
 ---
 
-⭐ If you like this project, consider giving it a star!
+## 📜 License
+
+This project is developed for educational and learning purposes.
+
+---
+
+### ⭐ Learn Smarter. Grow Faster. Powered by AI.
