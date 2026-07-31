@@ -112,16 +112,16 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
 
       const res = await fetch(`${API_URL}/predict-career`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}` 
+        },
         body: JSON.stringify({ scores }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
       setResults(data.main_career, data.other_careers)
-      localStorage.setItem("career_result", JSON.stringify({  // ADD
-        main_career: data.main_career,                        // ADD
-        other_careers: data.other_careers,                    // ADD
-      }));
+      localStorage.setItem("career_result", JSON.stringify(data))
       onComplete()
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.")

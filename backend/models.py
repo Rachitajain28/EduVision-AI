@@ -20,6 +20,8 @@ class User(BaseModel):
     college: Optional[str] = None
     course: Optional[str] = None
     quiz_results: List[QuizResult] = []
+    learning_style: Optional[str] = None
+    career_result: Optional[str] = None
 
 class UserResponse(BaseModel):
     id: str
@@ -32,3 +34,5 @@ class UserResponse(BaseModel):
     college: Optional[str] = None
     course: Optional[str] = None
     quiz_results: List[QuizResult] = []
+    learning_style: Optional[str] = None
+    career_result: Optional[str] = None

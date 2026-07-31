@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "@/lib/auth";
 import { Brain, BookOpen,Dumbbell,Trophy, Compass, User, Mail, GraduationCap, Users } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+
 const DashboardHome = () => {
   const [user, setUser] = useState<any>(null);
   const [learningStyle, setLearningStyle] = useState<any>(null);
@@ -15,28 +17,45 @@ const DashboardHome = () => {
     const data = getCurrentUser();
     setUser(data);
 
-    // Learning style — localStorage se
-    const ls = localStorage.getItem("learning_style_result");
-    if (ls) setLearningStyle(JSON.parse(ls));
+    const cachedLS = localStorage.getItem("learning_style_result")
+    const cachedCR = localStorage.getItem("career_result")
+    const cachedQR = localStorage.getItem("quiz_results")
+    if (cachedLS) setLearningStyle(JSON.parse(cachedLS))
+    if (cachedCR) setCareerResult(JSON.parse(cachedCR))
+    if (cachedQR) setQuizResults(JSON.parse(cachedQR))
 
-    // Career result — localStorage se
-    const cr = localStorage.getItem("career_result");
-    if (cr) setCareerResult(JSON.parse(cr));
+    const fetchFromMongo = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if (!token) return
+        
+        const res = await fetch(`${API_URL}/user-data`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        })
+        if (!res.ok) return
 
-    const fetchQuizResults = async () => {
-    try {
-      const token = localStorage.getItem("token")
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
-      const res = await fetch(`${API_URL}/quiz-results`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
-      const data = await res.json()
-      if (data.results) setQuizResults(data.results.reverse())
-    } catch (e) {
-      console.error("Failed to fetch quiz results", e)
+        const data = await res.json()
+
+        if (data.learning_style) {
+          setLearningStyle(data.learning_style)
+          localStorage.setItem("learning_style_result", JSON.stringify(data.learning_style))
+        }
+
+        if (data.career_result) {
+          setCareerResult(data.career_result)
+          localStorage.setItem("career_result", JSON.stringify(data.career_result))
+        }
+
+        if (data.quiz_results?.length > 0) {
+          const reversed = [...data.quiz_results].reverse()
+          setQuizResults(reversed)
+          localStorage.setItem("quiz_results", JSON.stringify(reversed))
+        }
+      } catch (e) {
+        console.error("Failed to fetch user data", e)
     }
   }
-  fetchQuizResults()
+  fetchFromMongo()
   }, []);
 
   const hour = new Date().getHours();
