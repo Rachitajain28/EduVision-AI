@@ -82,9 +82,21 @@ export const getCurrentUser = (): User | null => {
   return user ? JSON.parse(user) : null;
 };
 
+export const getUserId = (): string | null => {
+  const user = getCurrentUser();
+  return user?.email || null;
+};
+
 // ✅ LOGOUT
 export const logout = () => {
+  const userId = getUserId();
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  if (userId) {
+    localStorage.removeItem(`ls_${userId}`)
+    localStorage.removeItem(`cr_${userId}`)
+    localStorage.removeItem(`qr_${userId}`)
+  }
 };
 
 // ✅ AUTH CHECK

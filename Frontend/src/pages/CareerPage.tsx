@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useCareerStore } from "@/store/useCareerStore"
+import { getUserId } from "@/lib/auth"
 import {
   TrendingUp, Compass, ArrowRight, ArrowLeft,
   Loader2, RotateCcw, BadgeCheck
@@ -120,8 +121,8 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
-      setResults(data.main_career, data.other_careers)
-      localStorage.setItem("career_result", JSON.stringify(data))
+      const userId = getUserId()
+      localStorage.setItem(`cr_${userId}`, JSON.stringify(data))
       onComplete()
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.")

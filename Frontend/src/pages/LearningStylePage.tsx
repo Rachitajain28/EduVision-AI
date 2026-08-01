@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, ChevronRight } from "lucide-react";
 import learningData from "../data/learningStyleData.json";
+import { getUserId } from "@/lib/auth"
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const userId = getUserId();
 
 const shuffleArray = (array: any[]) => {
   const arr = [...array];
@@ -53,7 +55,7 @@ const LearningStylePage = () => {
 
       const data = await res.json();
       setResult(data);
-      localStorage.setItem("learning_style_result", JSON.stringify(data)); // ADD
+      localStorage.setItem(`ls_${userId}`, JSON.stringify(data)); // ADD
     } catch (error) {
       console.error("Error:", error);
     } finally {

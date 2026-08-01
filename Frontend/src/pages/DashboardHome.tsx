@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, getUserId } from "@/lib/auth";
 import { Brain, BookOpen,Dumbbell,Trophy, Compass, User, Mail, GraduationCap, Users } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
@@ -16,10 +16,11 @@ const DashboardHome = () => {
   useEffect(() => {
     const data = getCurrentUser();
     setUser(data);
+    const userId = getUserId()
 
-    const cachedLS = localStorage.getItem("learning_style_result")
-    const cachedCR = localStorage.getItem("career_result")
-    const cachedQR = localStorage.getItem("quiz_results")
+    const cachedLS = localStorage.getItem(`ls_${userId}`)
+    const cachedCR = localStorage.getItem(`cr_${userId}`)
+    const cachedQR = localStorage.getItem(`qr_${userId}`)
     if (cachedLS) setLearningStyle(JSON.parse(cachedLS))
     if (cachedCR) setCareerResult(JSON.parse(cachedCR))
     if (cachedQR) setQuizResults(JSON.parse(cachedQR))
@@ -38,18 +39,18 @@ const DashboardHome = () => {
 
         if (data.learning_style) {
           setLearningStyle(data.learning_style)
-          localStorage.setItem("learning_style_result", JSON.stringify(data.learning_style))
+          localStorage.setItem(`ls_${userId}`, JSON.stringify(data.learning_style))
         }
 
         if (data.career_result) {
           setCareerResult(data.career_result)
-          localStorage.setItem("career_result", JSON.stringify(data.career_result))
+          localStorage.setItem(`cr_${userId}`, JSON.stringify(data.career_result))
         }
 
         if (data.quiz_results?.length > 0) {
           const reversed = [...data.quiz_results].reverse()
           setQuizResults(reversed)
-          localStorage.setItem("quiz_results", JSON.stringify(reversed))
+          localStorage.setItem(`qr_${userId}`, JSON.stringify(reversed))
         }
       } catch (e) {
         console.error("Failed to fetch user data", e)
