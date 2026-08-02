@@ -120,6 +120,7 @@ const QuizView = ({ onComplete }: { onComplete: () => void }) => {
         body: JSON.stringify({ scores }),
       })
       const data = await res.json()
+      console.log("Career API response:", JSON.stringify(data))
       if (data.error) throw new Error(data.error)
       const userId = getUserId()
       localStorage.setItem(`cr_${userId}`, JSON.stringify(data))

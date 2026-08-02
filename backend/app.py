@@ -149,10 +149,15 @@ async def summarize_pdf(file: UploadFile = File(...)):
 
 # ================= LEARNING STYLE =================
 @app.post("/predict-learning-style")
-def predict_style(data: LearningInput):
+async def predict_style(data: LearningInput, current_user: dict = Depends(get_current_user)):
     try:
         result = predict_learning_style(data.answers)
-        return result   
+        await users_collection.update_one(
+            {"_id": current_user["_id"]},
+            {"$set": {"learning_style": result}}
+        )
+        return result
+  
     except Exception as e:
         return {"error": str(e)}
 
@@ -160,7 +165,8 @@ def predict_style(data: LearningInput):
 
 
 @app.post("/predict-career")
-def predict_career(data: CareerInput):
+async def predict_career(data: CareerInput, current_user: dict = Depends(get_current_user)):
+
     try:
         scores = data.scores
         if not validate_scores(scores):
@@ -168,10 +174,17 @@ def predict_career(data: CareerInput):
 
         results = predict_top_careers(scores)
 
-        return {
+        career_result = {
             "main_career": results[0],
             "other_careers": results[1:]
-        }
+            }
+        
+        await users_collection.update_one(
+            {"_id": current_user["_id"]},
+            {"$set": {"career_result": career_result}}
+        )
+        return career_result
+
 
     except Exception as e:
         print("ERROR:", e)
@@ -267,9 +280,10 @@ async def signup(data: SignupInput):
         "gender": data.gender,
         "college": data.college,
         "course": data.course,
-        "xp": 0,
-        "streak": 0,
-        "quiz_results": []
+        "quiz_results": [],
+        "learning_style": None,
+        "career_result": None
+
     }
 
     result = await users_collection.insert_one(user_doc)
@@ -330,6 +344,10 @@ async def save_quiz_result(data: QuizResultInput, current_user: dict = Depends(g
     )
     return {"message": "Result saved"}
 
-@app.get("/quiz-results")
-async def get_quiz_results(current_user: dict = Depends(get_current_user)):
-    return {"results": current_user.get("quiz_results", [])}
+@app.get("/user-data")
+async def get_user_data(current_user: dict = Depends(get_current_user)):
+    return {
+        "learning_style": current_user.get("learning_style", None),
+        "career_result": current_user.get("career_result", None),
+        "quiz_results": current_user.get("quiz_results", [])
+    }
