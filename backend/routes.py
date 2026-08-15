@@ -78,7 +78,7 @@ def summarize(data: TextInput):
         """
 
         response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": "You are a helpful AI tutor."},
                 {"role": "user", "content": prompt}
@@ -116,7 +116,7 @@ async def summarize_pdf(file: UploadFile = File(...)):
         """
 
         response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": "You are a helpful AI tutor."},
                 {"role": "user", "content": prompt}
@@ -197,7 +197,7 @@ Format:
 answer is the index (0-3) of the correct option.
 """
         response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {
                     "role": "system",
